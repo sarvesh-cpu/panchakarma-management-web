@@ -17,7 +17,7 @@ export function Navbar() {
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
               <Leaf className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-foreground">PBL Panchakarma</span>
+            <span className="text-xl font-bold text-foreground">Panchakarma</span>
           </Link>
 
           {/* Desktop Navigation */}
