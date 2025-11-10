@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,16 +12,53 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Stethoscope } from "lucide-react"
 
 export function PractitionerLoginForm() {
+  const router = useRouter()
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
-  const [license, setLicense] = useState("")
+  const [specialization, setSpecialization] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fillDemoCredentials = () => {
+    setEmail("dr.amit@panchakarma.com")
+    setPassword("Password123")
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // For MVP, redirect to dashboard
-    window.location.href = "/practitioner/dashboard"
+    setLoading(true)
+    setError("")
+
+    try {
+      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup"
+      const payload = isLogin ? { email, password } : { name, email, password, specialization, role: "practitioner" }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || "Authentication failed")
+        return
+      }
+
+      localStorage.setItem("auth_token", data.token)
+      localStorage.setItem("user_id", data.user.id)
+      localStorage.setItem("user_role", data.user.role)
+      localStorage.setItem("user_email", data.user.email)
+
+      router.push("/practitioner/dashboard")
+    } catch (err) {
+      setError("Network error. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -38,6 +76,27 @@ export function PractitionerLoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">{error}</div>
+          )}
+
+          {isLogin && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+              <p className="font-semibold text-blue-900 mb-2">Demo Credentials:</p>
+              <p className="text-blue-800">Email: dr.amit@panchakarma.com</p>
+              <p className="text-blue-800">Password: Password123</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={fillDemoCredentials}
+                className="mt-2 w-full bg-transparent"
+              >
+                Use Demo Account
+              </Button>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <>
@@ -53,13 +112,13 @@ export function PractitionerLoginForm() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="license">License Number</Label>
+                  <Label htmlFor="specialization">Specialization</Label>
                   <Input
-                    id="license"
+                    id="specialization"
                     type="text"
-                    placeholder="Enter your medical license"
-                    value={license}
-                    onChange={(e) => setLicense(e.target.value)}
+                    placeholder="E.g., Ayurvedic Physician"
+                    value={specialization}
+                    onChange={(e) => setSpecialization(e.target.value)}
                     required
                   />
                 </div>
@@ -87,15 +146,22 @@ export function PractitionerLoginForm() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full btn-gradient text-white">
-              {isLogin ? "Login" : "Create Account"}
+            <Button type="submit" className="w-full btn-gradient text-white" disabled={loading}>
+              {loading ? "Processing..." : isLogin ? "Login" : "Create Account"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <Button variant="link" className="p-0 ml-1 text-primary" onClick={() => setIsLogin(!isLogin)}>
+              <Button
+                variant="link"
+                className="p-0 ml-1 text-primary"
+                onClick={() => {
+                  setIsLogin(!isLogin)
+                  setError("")
+                }}
+              >
                 {isLogin ? "Sign up" : "Login"}
               </Button>
             </p>
