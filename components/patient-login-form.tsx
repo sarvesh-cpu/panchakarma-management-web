@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -47,10 +46,8 @@ export function PatientLoginForm() {
         return
       }
 
-      localStorage.setItem("auth_token", data.token)
-      localStorage.setItem("user_id", data.user.id)
-      localStorage.setItem("user_role", data.user.role)
-      localStorage.setItem("user_email", data.user.email)
+      sessionStorage.setItem("user", JSON.stringify(data.user))
+      sessionStorage.setItem("user_id", data.user.id)
 
       router.push("/patient/dashboard")
     } catch (err) {

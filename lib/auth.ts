@@ -6,6 +6,13 @@ import { UserModel } from "./models/user"
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-change-in-production"
 const JWT_EXPIRES_IN = "7d"
 
+export interface User {
+  id: number
+  email: string
+  name: string
+  role: "patient" | "practitioner"
+}
+
 export interface JWTPayload {
   userId: number
   email: string
@@ -84,4 +91,25 @@ export function canAccessResource(
   }
 
   return false
+}
+
+// Store user in session
+export function setSessionUser(user: User) {
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem("user", JSON.stringify(user))
+  }
+}
+
+// Get user from session
+export function getSessionUser(): User | null {
+  if (typeof window === "undefined") return null
+  const user = sessionStorage.getItem("user")
+  return user ? JSON.parse(user) : null
+}
+
+// Clear session
+export function clearSessionUser() {
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("user")
+  }
 }

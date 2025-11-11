@@ -1,8 +1,9 @@
 // Database connection and query utilities
+process.env.NODE_PG_FORCE_NATIVE = "false"
 import { Pool, type PoolClient } from "pg"
 
 // Disable native PostgreSQL bindings that cause addon.node errors
-process.env.NODE_PG_FORCE_NATIVE = "false"
+// process.env.NODE_PG_FORCE_NATIVE = "false" // This line is now moved above the import statement
 
 // Database connection pool with fallback error handling
 let pool: Pool | null = null

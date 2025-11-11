@@ -26,14 +26,6 @@ export function validatePassword(password: string): { valid: boolean; message?: 
   if (password.length < 6) {
     return { valid: false, message: "Password must be at least 6 characters long" }
   }
-
-  if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-    return {
-      valid: false,
-      message: "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-    }
-  }
-
   return { valid: true }
 }
 
