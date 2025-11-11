@@ -1,6 +1,6 @@
 // User model with database operations
 import { query } from "../database"
-import { hash, compare } from "bcrypt-ts"
+import bcrypt from "bcryptjs"
 
 export interface User {
   id: number
@@ -22,7 +22,7 @@ export interface CreateUserData {
 export class UserModel {
   // Create a new user
   static async create(userData: CreateUserData): Promise<User> {
-    const hashedPassword = await hash(userData.password, 10)
+    const hashedPassword = await bcrypt.hash(userData.password, 10)
 
     const result = await query(
       `INSERT INTO users (name, email, password, role) 
@@ -50,7 +50,7 @@ export class UserModel {
 
   // Verify password
   static async verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
-    return compare(plainPassword, hashedPassword)
+    return bcrypt.compare(plainPassword, hashedPassword)
   }
 
   // Get all practitioners

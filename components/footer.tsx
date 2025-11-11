@@ -11,7 +11,7 @@ export function Footer() {
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <Leaf className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">PBL Panchakarma</span>
+              <span className="text-xl font-bold">Panchakarma</span>
             </div>
             <p className="text-background/80 text-pretty">
               Revolutionizing Ayurvedic care through digital innovation and personalized therapy management.
@@ -24,15 +24,15 @@ export function Footer() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
-                <span className="text-background/80">info@pblpanchakarma.com</span>
+                <span className="text-background/80"></span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span className="text-background/80">+1 (555) 123-4567</span>
+                <span className="text-background/80">075070 30304</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="w-4 h-4" />
-                <span className="text-background/80">123 Wellness Street, Ayurveda City</span>
+                <span className="text-background/80">Tulsi Hospital Nandurbar</span>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@ export function Footer() {
 
         <div className="border-t border-background/20 mt-8 pt-8 text-center">
           <p className="text-background/60">
-            © 2025 PBL Panchakarma. All rights reserved. | Empowering wellness through ancient wisdom and modern
+            © 2025 Panchakarma. All rights reserved. | Empowering wellness through ancient wisdom and modern
             technology.
           </p>
         </div>

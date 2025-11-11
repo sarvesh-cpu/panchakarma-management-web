@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
+
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,50 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Leaf } from "lucide-react"
 
 export function PatientLoginForm() {
-  const router = useRouter()
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [name, setName] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
 
-  const fillDemoCredentials = () => {
-    setEmail("rajesh.patient@panchakarma.com")
-    setPassword("Password123")
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError("")
-
-    try {
-      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup"
-      const payload = isLogin ? { email, password } : { name, email, password, role: "patient" }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        setError(data.error || "Authentication failed")
-        return
-      }
-
-      sessionStorage.setItem("user", JSON.stringify(data.user))
-      sessionStorage.setItem("user_id", data.user.id)
-
-      router.push("/patient/dashboard")
-    } catch (err) {
-      setError("Network error. Please try again.")
-    } finally {
-      setLoading(false)
-    }
+    // For MVP, redirect to dashboard
+    window.location.href = "/patient/dashboard"
   }
 
   return (
@@ -70,27 +35,6 @@ export function PatientLoginForm() {
           <CardDescription>{isLogin ? "Access your therapy dashboard" : "Create your patient account"}</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">{error}</div>
-          )}
-
-          {isLogin && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
-              <p className="font-semibold text-blue-900 mb-2">Demo Credentials:</p>
-              <p className="text-blue-800">Email: rajesh.patient@panchakarma.com</p>
-              <p className="text-blue-800">Password: Password123</p>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={fillDemoCredentials}
-                className="mt-2 w-full bg-transparent"
-              >
-                Use Demo Account
-              </Button>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
@@ -127,22 +71,15 @@ export function PatientLoginForm() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full btn-gradient text-white" disabled={loading}>
-              {loading ? "Processing..." : isLogin ? "Login" : "Create Account"}
+            <Button type="submit" className="w-full btn-gradient text-white">
+              {isLogin ? "Login" : "Create Account"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
               {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <Button
-                variant="link"
-                className="p-0 ml-1 text-primary"
-                onClick={() => {
-                  setIsLogin(!isLogin)
-                  setError("")
-                }}
-              >
+              <Button variant="link" className="p-0 ml-1 text-primary" onClick={() => setIsLogin(!isLogin)}>
                 {isLogin ? "Sign up" : "Login"}
               </Button>
             </p>
